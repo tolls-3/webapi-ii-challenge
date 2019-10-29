@@ -93,28 +93,24 @@ function getPostById(req, res) {
 
 function getCommentById(req, res) {
   const id = req.params.id;
-  db.findById(id)
-    .then(item => {
-      if (item.length === 0) {
-        res.status(404).json({
-          message: "The post with the specified ID does not exist."
-        });
-      } else {
-        db.findPostComments(req.params.id)
-          .then(comments => {
-            res.status(200).json(comments);
-          })
-          .catch(error => {
-            res.status(500).json(error);
-          });
-      }
-    })
-    .catch(error => {
-      console.log(error);
-      res.status(500).json({
-        error: "The comments information could not be retrieved."
+  db.findById(id).then(item => {
+    if (item.length === 0) {
+      res.status(404).json({
+        message: "The post with the specified ID does not exist."
       });
-    });
+    } else {
+      db.findPostComments(req.params.id)
+        .then(comments => {
+          res.status(200).json(comments);
+        })
+        .catch(error => {
+          console.log(error);
+          res.status(500).json({
+            error: "The comments information could not be retrieved."
+          });
+        });
+    }
+  });
 }
 
 function deletePostById(req, res) {
